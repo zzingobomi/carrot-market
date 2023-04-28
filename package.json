@@ -9,10 +9,12 @@
   },
   "dependencies": {
     "@prisma/client": "^4.13.0",
+    "@sendgrid/mail": "^7.6.0",
     "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-hook-form": "^7.43.9"
+    "react-hook-form": "^7.43.9",
+    "twilio": "^3.73.0"
   },
   "devDependencies": {
     "@types/node": "18.15.11",
