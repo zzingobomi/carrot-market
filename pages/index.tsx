@@ -6,9 +6,15 @@ import useUser from "@libs/client/useUser";
 import { Product } from "@prisma/client";
 import useSWR from "swr";
 
+interface ProductWithCount extends Product {
+  _count: {
+    favs: number;
+  };
+}
+
 interface ProductsResponse {
   ok: boolean;
-  products: Product[];
+  products: ProductWithCount[];
 }
 
 const Home: NextPage = () => {
@@ -18,14 +24,13 @@ const Home: NextPage = () => {
   return (
     <Layout title="홈" hasTabBar>
       <div className="flex flex-col space-y-5 divide-y">
-        {data?.products?.map((products) => (
+        {data?.products?.map((product) => (
           <Item
-            key={products.id}
-            id={products.id}
-            title={products.name}
-            price={products.price}
-            comments={1}
-            hearts={1}
+            key={product.id}
+            id={product.id}
+            title={product.name}
+            price={product.price}
+            hearts={product._count.favs}
           ></Item>
         ))}
       </div>

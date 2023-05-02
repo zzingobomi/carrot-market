@@ -11,7 +11,7 @@ async function handler(
     query: { id },
     session: { user },
   } = req;
-  const product = await client.product.findUnique({
+  const post = await client.post.findUnique({
     where: {
       id: +id!.toString(),
     },
@@ -23,27 +23,31 @@ async function handler(
           avatar: true,
         },
       },
-    },
-  });
-  const terms = product?.name.split(" ").map((word) => ({
-    name: {
-      contains: word,
-    },
-  }));
-  const relatedProducts = await client.product.findMany({
-    where: {
-      OR: terms,
-      AND: {
-        id: {
-          not: product?.id,
+      answers: {
+        select: {
+          answer: true,
+          id: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true,
+            },
+          },
+        },
+      },
+      _count: {
+        select: {
+          answers: true,
+          wonderings: true,
         },
       },
     },
   });
-  const isLiked = Boolean(
-    await client.fav.findFirst({
+  const isWondering = Boolean(
+    await client.wondering.findFirst({
       where: {
-        productId: product?.id,
+        postId: +id!.toString(),
         userId: user?.id,
       },
       select: {
@@ -51,7 +55,11 @@ async function handler(
       },
     })
   );
-  res.json({ ok: true, product, isLiked, relatedProducts });
+  res.json({
+    ok: true,
+    post,
+    isWondering,
+  });
 }
 
 export default withApiSession(withHandler({ methods: ["GET"], handler }));
