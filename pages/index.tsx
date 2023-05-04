@@ -5,6 +5,8 @@ import Layout from "@components/layout";
 import useUser from "@libs/client/useUser";
 import { Product } from "@prisma/client";
 import useSWR from "swr";
+import Image from "next/image";
+import riceCake from "../public/local.jpeg";
 
 export interface ProductWithCount extends Product {
   _count: {
@@ -51,6 +53,7 @@ const Home: NextPage = () => {
           />
         </svg>
       </FloatingButton>
+      {/* <Image src={riceCake} placeholder="blur" quality={5} alt="test" /> */}
     </Layout>
   );
 };
