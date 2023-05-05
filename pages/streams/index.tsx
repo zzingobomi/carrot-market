@@ -4,6 +4,7 @@ import FloatingButton from "@components/floating-button";
 import Layout from "@components/layout";
 import { Stream } from "@prisma/client";
 import useSWR from "swr";
+import Image from "next/image";
 
 interface StreamsResponse {
   ok: boolean;
@@ -22,7 +23,13 @@ const Streams: NextPage = () => {
             href={`/streams/${stream.id}`}
             className="pt-4 block  px-4"
           >
-            <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video" />
+            <div className="w-full relative overflow-hidden rounded-md shadow-sm bg-slate-300 aspect-video">
+              <Image
+                src={`https://videodelivery.net/${stream.cloudflareId}/thumbnails/thumbnail.jpg?height=320`}
+                fill
+                alt="thumbnail"
+              />
+            </div>
             <h1 className="text-2xl mt-2 font-bold text-gray-900">
               {stream.name}
             </h1>
