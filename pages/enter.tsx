@@ -7,6 +7,9 @@ import { useForm } from "react-hook-form";
 import useMutation from "@libs/client/useMutation";
 import { useRouter } from "next/router";
 
+// import dynamic from "next/dynamic";
+// const Bs = dynamic(() => import("@components/bs"), {ssr: false});
+
 interface EnterForm {
   email?: string;
   phone?: string;

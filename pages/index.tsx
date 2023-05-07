@@ -4,9 +4,10 @@ import Item from "@components/item";
 import Layout from "@components/layout";
 import useUser from "@libs/client/useUser";
 import { Product } from "@prisma/client";
-import useSWR from "swr";
+import useSWR, { SWRConfig } from "swr";
 import Image from "next/image";
 import riceCake from "../public/local.jpeg";
+import client from "@libs/server/client";
 
 export interface ProductWithCount extends Product {
   _count: {
@@ -26,15 +27,17 @@ const Home: NextPage = () => {
   return (
     <Layout title="홈" hasTabBar>
       <div className="flex flex-col space-y-5 divide-y">
-        {data?.products?.map((product) => (
-          <Item
-            key={product.id}
-            id={product.id}
-            title={product.name}
-            price={product.price}
-            hearts={product._count.favs}
-          ></Item>
-        ))}
+        {data
+          ? data?.products?.map((product) => (
+              <Item
+                key={product.id}
+                id={product.id}
+                title={product.name}
+                price={product.price}
+                hearts={product._count?.favs}
+              ></Item>
+            ))
+          : "Loading..."}
       </div>
       <FloatingButton href="/products/upload">
         <svg
@@ -58,4 +61,34 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+// SSR 의 장점과 SWR 의 캐시 기능을 같이 사용하기 위해 서버사이드에서 SWR 캐시에 products 값을 넣어준다
+// 이렇게 되면 서버에서 db 접속 한번, client 에서 db 접속 한번 하는것은 아닌가..?
+const Page: NextPage<{ products: ProductWithCount[] }> = ({ products }) => {
+  return (
+    <SWRConfig
+      value={{
+        fallback: {
+          "/api/products": {
+            ok: true,
+            products,
+          },
+        },
+      }}
+    >
+      <Home />
+    </SWRConfig>
+  );
+};
+
+export async function getServerSideProps() {
+  console.log("SSR");
+  const products = await client.product.findMany({});
+
+  return {
+    props: {
+      products: JSON.parse(JSON.stringify(products)),
+    },
+  };
+}
+
+export default Page;
