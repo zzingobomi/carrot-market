@@ -2,11 +2,20 @@ import Layout from "@components/layout";
 import { readdirSync } from "fs";
 import matter from "gray-matter";
 import { GetStaticProps, NextPage } from "next";
+import { useRouter } from "next/router";
 import remarkHtml from "remark-html";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
 
 const Post: NextPage<{ post: string; data: any }> = ({ post, data }) => {
+  const router = useRouter();
+  if (router.isFallback) {
+    return (
+      <Layout title="Loading for you">
+        <span>I love bomi</span>
+      </Layout>
+    );
+  }
   return (
     <Layout title={data.title} seoTitle={data.title}>
       <div
@@ -18,13 +27,18 @@ const Post: NextPage<{ post: string; data: any }> = ({ post, data }) => {
 };
 
 export function getStaticPaths() {
-  const files = readdirSync("./posts").map((file) => {
-    const [name, extension] = file.split(".");
-    return { params: { slug: name } };
-  });
+  // const files = readdirSync("./posts").map((file) => {
+  //   const [name, extension] = file.split(".");
+  //   return { params: { slug: name } };
+  // });
+  // return {
+  //   paths: files,
+  //   fallback: false,
+  // };
+
   return {
-    paths: files,
-    fallback: false,
+    paths: [],
+    fallback: true,
   };
 }
 
