@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
+  provider     = "postgresql"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
@@ -54,7 +54,7 @@ model Product {
   image       String
   name        String
   price       Int
-  description String     @db.MediumText
+  description String     @db.VarChar(1024)
   favs        Fav[]
   Sale        Sale[]
   Purchase    Purchase[]
@@ -69,7 +69,7 @@ model Post {
   updatedAt  DateTime    @updatedAt
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
-  question   String      @db.MediumText
+  question   String      @db.VarChar(1024)
   latitude   Float?
   longitude  Float?
   answers    Answer[]
@@ -86,7 +86,7 @@ model Answer {
   userId    Int
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    Int
-  answer    String   @db.MediumText
+  answer    String   @db.VarChar(1024)
 
   @@index([userId])
   @@index([postId])
@@ -109,7 +109,7 @@ model Review {
   id           Int      @id @default(autoincrement())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  review       String   @db.MediumText
+  review       String   @db.VarChar(1024)
   createdBy    User     @relation(name: "writtenReviews", fields: [createdById], references: [id], onDelete: Cascade)
   createdById  Int
   createdFor   User     @relation(name: "receivedReviews", fields: [createdForId], references: [id], onDelete: Cascade)
@@ -184,7 +184,7 @@ model Stream {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   name          String
-  description   String    @db.MediumText
+  description   String    @db.VarChar(1024)
   price         Int
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int
@@ -202,7 +202,7 @@ model Message {
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
-  message   String   @db.MediumText
+  message   String   @db.VarChar(1024)
   stream    Stream   @relation(fields: [streamId], references: [id], onDelete: Cascade)
   streamId  Int
 
